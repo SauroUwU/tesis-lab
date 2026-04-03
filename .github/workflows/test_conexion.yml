@@ -1,11 +1,22 @@
 name: Test de Infraestructura Tesis
-on: [push] # Se dispara cada vez que haces push al repo
+on: [push]
 
 jobs:
   check-casa:
     runs-on: ubuntu-latest
     steps:
-      - name: Conectar a CachyOS vía Tailscale
+      - name: Checkout del código
+        uses: actions/checkout@v4
+
+      # ESTE ES EL PASO MÁGICO: Conecta la VM de GitHub a tu red privada
+      - name: Tailscale
+        uses: tailscale/github-action@v2
+        with:
+          oauth-client-id: ${{ secrets.TS_CLIENT_ID }}
+          oauth-secret: ${{ secrets.TS_CLIENT_SECRET }}
+          tags: tag:ci
+
+      - name: Conectar a CachyOS y ejecutar Podman
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.SERVER_IP }}
@@ -13,9 +24,5 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           script: |
-            echo "--- ¡CONEXIÓN EXITOSA! ---"
-            echo "Usuario: $(whoami)"
-            echo "Host: $(hostname)"
+            echo "--- ¡CONEXIÓN EXITOSA DESDE EL TÚNEL! ---"
             podman --version
-            echo "--------------------------"
-
