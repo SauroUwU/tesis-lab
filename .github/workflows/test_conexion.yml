@@ -14,6 +14,7 @@ jobs:
         with:
           oauth-client-id: ${{ secrets.TS_CLIENT_ID }}
           oauth-secret: ${{ secrets.TS_CLIENT_SECRET }}
+          tags: tag:ci
 
       - name: Conectar a CachyOS y ejecutar Podman
         uses: appleboy/ssh-action@v1.0.3
