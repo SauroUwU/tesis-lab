@@ -1,0 +1,21 @@
+name: Test de Infraestructura Tesis
+on: [push] # Se dispara cada vez que haces push al repo
+
+jobs:
+  check-casa:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Conectar a CachyOS vía Tailscale
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
+          script: |
+            echo "--- ¡CONEXIÓN EXITOSA! ---"
+            echo "Usuario: $(whoami)"
+            echo "Host: $(hostname)"
+            podman --version
+            echo "--------------------------"
+
